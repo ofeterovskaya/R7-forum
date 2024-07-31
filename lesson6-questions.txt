@@ -3,36 +3,63 @@ Questions for Lesson 6
 1. When you enable CRUD operations on a table in the database, you need to add four things
 to your Rails application.  When you generate a scaffold, all four are created.What are they?
 
+Model: This component represents the structure and behavior of the data in the database. 
+It defines the schema, relationships, and validations associated with the table.
 
+Controller: This manages the flow of data between the model and the views. 
+It includes actions that handle HTTP requests and interact with the model to perform CRUD operations.
+
+Views: These are the templates that generate the HTML content shown to users. 
+Each CRUD operation typically has a corresponding view to display the data or forms.
+
+Routes: These define the URL patterns and map them to the appropriate controller actions. 
+They ensure that requests are directed to the correct parts of the application.
+When I used the Rails scaffold generator (rails generate scaffold ModelName), it creates all four components
 
 
 2. When you specify a route in config/routes.rb, you need to include certain information.  What
 must be included? In addition, you may specify an additional parameter to create a variable
 that describes the route.  How do you do that? What variable is created?
 
+WHen I specify a route in config/routes.rb I implemented :
+ HTTP Method: The type of HTTP request that the route should respond to (e.g., get, post, patch, put, delete).
+ URL pattern: The URL path for the route.
+Controller and Action: This indicates which controller and action should handle the request.
 
 
 3. What does the Rails db:migrate command do?
-
-
+  This command will apply all pending migrations in the db/migrate directory to the database, bringing it up to date with the latest schema changes
 
 4. What file do you look at to see the current database schema?
-
+To see the current database schema in a Rails application, you look at the db/schema.rb file.
 
 5. What command shows the routes?
 
+bin/rails routes
 
 6. How can you start the Rails console? How can you do CRUD operations from the console?
-
+bin/rails c
+create -> user = User.create(name: '', email: '')
+read all -> users = User.all
+read one by id -> user = User.find(1)
+update -> user = User.find(1)  +    user.update(name: 'MAry Li')
+delete -> user = User.find(1)  +    user.destroy
 
 7. What statements are in erb files that make them different from html files?  What are the
 two kinds of special statements, and how are they marked in the erb file? Where are they executed?
 
+The Ruby code within these erb statements is executed on the server side when the template is rendered. 
+The result of this execution is plain HTML, which is then sent to the client's browser.
+there are two kinds of special statements in ERB files:
+Output Statements (<%= ... %>): Insert the result of Ruby code into the HTML.
+Script Statements (<% ... %>): Execute Ruby code without inserting anything into the HTML.
 
 8. Consider this statement: @forum = Forum.new().  Why is Forum capitalized?  Why is @forum not
 capitalized? Why is the @ used?
 
-
+Forum is capitalized because it is a class name in Ruby. 
+@forum is an instance variable, and instance variables in Ruby begin with an @ symbol and are written in lowercase (snake_case). 
+The @ symbol indicates that forum is an instance variable.
 
 9. Consider these statements:
 
@@ -40,8 +67,19 @@ capitalized? Why is the @ used?
 @forum =Forum.create(...)
 @forum.save(...)
 
-What is the difference between Forum.new() and Forum.create()?  Why can't you do Forum.save(...)?
+@forum = Forum.new(...) ->
+ This statement creates a new instance of the Forum class with the attributes specified in the parentheses.
 
+@forum =Forum.create(...) -> 
+This statement creates a new instance of the Forum class and immediately saves it to the database. It combines new and save in one step.
+
+@forum.save(...) ->
+ this statement saves the current instance of @forum to the database. This method is called on an object that has already been instantiated, 
+ either by new or by loading it from the database.
+
+What is the difference between Forum.new() and Forum.create()?  Why can't you do Forum.save(...)?
+Forum.new(...): Instantiates a new Forum object but does not save it to the database.
+Forum.create(...): Instantiates and saves a new Forum object to the database in one step.
 
 10. In the forums controller, you have a method called show:
 
@@ -56,6 +94,8 @@ is a hash called params that is passed to that method.  And, in this case, the p
 hash has a value, params[:id].  What is the value for this element of the hash? How
 did it get there?
 
-
+Default Behavior: The show action automatically renders a view template named show and uses the params[:id] to find and display the appropriate forum.
+The value of params[:id] is extracted from the URL of the request and corresponds to the ID of the forum to be shown.
+It is populated based on the URL and route configuration, allowing Rails to locate the specific forum record in the database.
 
 
