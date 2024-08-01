@@ -81,6 +81,23 @@ What is the difference between Forum.new() and Forum.create()?  Why can't you do
 Forum.new(...): Instantiates a new Forum object but does not save it to the database.
 Forum.create(...): Instantiates and saves a new Forum object to the database in one step.
 
+Difference between Forum.new(...) and Forum.create(...)
+Forum.new(...):
+
+This method instantiates a new Forum object with the attributes specified in the parentheses.
+It doesn't save the object to a database.
+You need to call @forum.save to have an opportunity to save the object to the database.
+Forum.create(...):
+
+This method both instantiates a new Forum object and immediately saves it to the database.
+It combines the functionality of new and save in one step.
+
+However I cannot do Forum.save(...) because  is not a valid method call because save is an instance method, not a class method.
+ First I need an instance of the Forum class to call save on it.
+@forum = Forum.new(...)
+@forum.save
+
+
 10. In the forums controller, you have a method called show:
 
   def show
