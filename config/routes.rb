@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # Remove the duplicate subscriptions route
+  # resources :subscriptions
+
   get 'posts/create'
   get 'posts/new'
   get 'posts/edit'
@@ -24,9 +27,8 @@ Rails.application.routes.draw do
     resources :subscriptions, shallow: true, except: [:index]
   end
 
-  get '/subscriptions', 
-  to: 'subscriptions#index', 
-  as: 'subscriptions'
+  # Keep only this subscriptions route
+  get '/subscriptions', to: 'subscriptions#index', as: 'subscriptions'
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
