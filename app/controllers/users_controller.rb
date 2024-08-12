@@ -1,22 +1,11 @@
 class UsersController < ApplicationController
   before_action :set_user, only: %i[ show edit update destroy logon ]
+
   # GET /users or /users.json
   def index
     @users = User.all
-    
-    if session[:current_user]
-      begin
-        @current_user = User.find(session[:current_user])
-      rescue ActiveRecord::RecordNotFound
-        # Check if the user ID in the session is valid
-        session.delete(:current_user) # Delete the session if the user ID is invalid
-        @current_user = nil
-      end
-    else
-      @current_user = nil
-    end
   end
-  
+
   # GET /users/1 or /users/1.json
   def show
   end
@@ -89,4 +78,3 @@ class UsersController < ApplicationController
       params.require(:user).permit(:name, :skill_level)
     end
 end
-

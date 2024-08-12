@@ -4,7 +4,8 @@ Questions for Lesson 7
 before some or all of the controller actions execute?  Where can you put that
 change so that it affects all controllers?
 
-
+          To execute a method before some or all actions in a controller, use the before_action callback. 
+          To affect all controllers, place the before_action in the ApplicationController.
 
 2. Consider the following statement:
 
@@ -13,13 +14,32 @@ bin/rails generate model subscription forum:references user:references priority:
 This creates several files, including two you need to know about.  What are they?
 After you do this statement but before starting the rails server, you have to do another
 command.  What is that command?
-
+        Files Created:
+          app/models/subscription.rb
+          db/migrate/[timestamp]_create_subscriptions.rb
+        Command to Run Before Starting the Rails Server:
+          bin/rails db:migrate
 
 
 3. What table is created as a result of the migration described above? What are the column
 names in that table? What is the primary key? What are the foreign keys?  What does a 
 foreign key do?
-
+        Table Created:
+              subscriptions
+        Column Names:
+              id (primary key)
+              forum_id (foreign key)
+              user_id (foreign key)
+              priority
+              created_at
+              updated_at
+        Primary Key:
+              id
+        Foreign Keys:
+              forum_id
+              user_id
+Purpose of a Foreign Key: A foreign key establishes a relationship between two tables, ensuring referential integrity by linking the
+ foreign key column in one table to the primary key column in another table.
 
 
 4. You have the following lines in the Subscription model:
@@ -32,7 +52,10 @@ that if you have a @subscription (an instance of Subscription), you have a coupl
 used to refer to associated database methods.  What are those methods?  (Actually there are a few,
 but there are two in particular you should know.)
 
-
+          The two key methods added to the Subscription class due to the belongs_to associations are:
+                @subscription.user
+                @subscription.forum
+          These methods allow  to access the associated User and Forum objects
 
 5. You have the following lines in the User model.
 
@@ -42,6 +65,9 @@ has_many :forums, through: :subscriptions
 
 What are threee important methods that are available to instances of the user model because
 of these lines?
+            @user.subscriptions
+            @user.posts
+            @user.forums
 
 
 
@@ -66,6 +92,9 @@ new_subscription = user.subscriptions.new
 Try that last line.  You will see that it creates a subscription object, but that
 object is not entirely empty.  Which attribute is set? Where does it get that
 value?
+          user.subscriptions call returns an object of the class ActiveRecord::Associations::CollectionProxy.
+          When I create a new subscription using new_subscription = user.subscriptions.new, the user_id attribute is automatically set.
+          This value is derived from the user instance, ensuring the new subscription is associated with the correct user.
 
 
 
@@ -74,7 +103,10 @@ Active Record Statement could you use to retrieve all the user's posts for that
 forum?  Hint: You need to have a where in your statement. Try this out in the console.
 You will see the SQL that is executed logged to the screen.  What is that SQL?
 
-
+        To retrieve all the user's posts for a specific forum, I used
+        user.posts.where(forum: forum)        
+        The SQL that is executed looks like SELECT "posts".* FROM "posts" WHERE "posts"."user_id" = ? AND "posts"."forum_id" = ?
+        (? placeholders are replaced with the user.id and forum.id)
 
 8. You have the following method in your posts controller:
 
@@ -86,14 +118,20 @@ You will see the SQL that is executed logged to the screen.  What is that SQL?
 
 There is a security exposure, a risk that a hacker could do damage.  What is that
 risk? What two things are done in your code to prevent the risk?
+              Authentication: Ensure that the user is logged in before allowing them to perform any actions.
+               This can be done using a before_action callback to check if the user is authenticated.  ensures the user is logged in.
 
+              Authorization: Ensure that the user is authorized to delete the specific post. This can be done by checking if the current user is the owner of the post
+               before allowing the deletion. Ensures the user is the owner of the post before allowing the deletion.
 
 
 9. The routes for subscriptions are nested under the forum routes.  How does this
 change the routes?  What is the additional hash key and value that is passed in the
 params hash to the subscriptions controller as a result of this nesting? Which routes
 are unaffected by the nesting?
-
+            When routes for subscriptions are nested under forum routes, the URL structure changes to reflect the hierarchy.
+            The additional hash key and value passed in the params hash to the subscriptions controller (params[:forum_id])
+            Routes that are not nested, such as those for other resources like users or posts (if not nested), remain unaffected by this nesting. 
 
 
 
@@ -101,5 +139,6 @@ are unaffected by the nesting?
 method may do all sorts of logic, but at the end, it has to do one of two
 things, depending on the outcome of the logic.  What are those two things?
 
-
+            Render a View: This involves rendering a template to display to the user.
+            Redirect to Another Action: This involves redirecting the user to a different action or URL.
 
